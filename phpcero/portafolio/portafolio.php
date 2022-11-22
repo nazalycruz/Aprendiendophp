@@ -1,4 +1,31 @@
 <?php include_once '../portafolio/cabecera.php' ?>
+<?php include_once '../portafolio/conexion.php' ?>
+
+<?php  
+//instanciando conexion
+$objconexion = new conexion();
+
+if($_POST){
+
+    // var_dump($_POST);
+    $nombre = $_POST['txtnombre'];
+    $imagen = $_FILES['txtarchivo']['name'];
+
+    if($nombre != "" && $imagen != ""){
+        $sql = "INSERT INTO `proyectos` (`id_proyecto`, `nombre`, `imagen`, `descripcion`) VALUES (NULL, '$nombre', '$imagen', 'insertando');";
+        $objconexion->Ejecutar($sql);
+    }else{
+        echo '<script>alert("FAVOR DE LLENAR LOS TODOS LOS CAMPOS")</script>';
+    }
+
+
+}
+
+$sql = "SELECT * FROM proyectos";
+$respuesta = ($objconexion->Sentencia($sql));
+
+// var_dump($respuesta);
+?>
 
 <br/>
 <div class="container">
@@ -9,7 +36,7 @@
                     Proyecto
                 </div>
                 <div class="card-body">
-                    <form action="portafolio.php" method="post">
+                    <form action="portafolio.php" method="post" enctype="multipart/form-data">
                         Nombre del proyecto: <input class="form-control" type="text" name="txtnombre" id="">
                         <br/>
                         Imagen del proyecto: <input class="form-control" type="file" name="txtarchivo" id="">
@@ -33,16 +60,14 @@
                         </tr>
                     </thead>
                     <tbody>
+                    <?php foreach($respuesta as $item){?>
                         <tr class="">
-                            <td scope="row">R1C1</td>
-                            <td>R1C2</td>
-                            <td>R1C3</td>
+                            <td><?php echo $item['id_proyecto'] ?></td>
+                            <td scope="row"><?php echo $item['nombre']?></td>
+                            <td><?php echo $item['imagen']?></td>
+                           <td><button type="button" name="" id="" class="btn btn-danger">Eliminar</button></td>
                         </tr>
-                        <tr class="">
-                            <td scope="row">Item</td>
-                            <td>Item</td>
-                            <td>Item</td>
-                        </tr>
+                    <?php } ?>  
                     </tbody>
                 </table>
             </div>
